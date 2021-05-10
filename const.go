@@ -4,7 +4,7 @@
  * User: kailee
  * Date: 2021/5/10 12:38 PM
  */
-package go_ed25519
+package ed25519
 
 import "errors"
 
