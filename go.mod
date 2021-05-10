@@ -1,4 +1,4 @@
-module go-ed25519
+module github.com/CoinSummer/go-ed25519
 
 go 1.15
 
