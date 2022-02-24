@@ -13,10 +13,10 @@ import (
 
 // m/44'/501'/0'/0'
 func TestVerifyPath(t *testing.T) {
-	tests := []struct{
-		id int
+	tests := []struct {
+		id   int
 		path string
-	} {
+	}{
 		{
 			0,
 			"m/44'/501'/0'/0'",
@@ -41,7 +41,7 @@ func TestGenerateMnemonic(t *testing.T) {
 }
 
 func TestGenerateKey(t *testing.T) {
-	words := ``
+	words := `dream magnet distance rude luggage mirror toe trim exotic toddler deputy ahead`
 
 	pubKey, privateKey, err := GenerateKey(words, "", 0)
 	fmt.Println("pubKey:", PubKeyToStr(pubKey))

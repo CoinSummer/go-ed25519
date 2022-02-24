@@ -22,12 +22,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/shirou/gopsutil/cpu"
-	"github.com/shirou/gopsutil/disk"
-	"github.com/shirou/gopsutil/mem"
-	"github.com/shirou/gopsutil/net"
+	"github.com/shirou/gopsutil/v3/cpu"
+	"github.com/shirou/gopsutil/v3/disk"
+	"github.com/shirou/gopsutil/v3/mem"
+	"github.com/shirou/gopsutil/v3/net"
 	"github.com/tyler-smith/go-bip39"
-
 )
 
 type Key struct {
@@ -65,7 +64,7 @@ func entropy() ([]byte, error) {
 	return entropy[:16], nil
 }
 
-// 生成助记词
+// GenerateMnemonic 生成助记词
 func GenerateMnemonic() (string, error) {
 	entropyBytes, err := entropy()
 	if err != nil {
@@ -79,7 +78,7 @@ func GenerateMnemonic() (string, error) {
 	return mnemonic, nil
 }
 
-// 生成公钥私钥对
+// GenerateKey 生成公钥私钥对
 func GenerateKey(mnemonic, password string, index int) (ed25519.PublicKey, ed25519.PrivateKey, error) {
 	seed, err := Seed(mnemonic, password)
 	if err != nil {
@@ -104,7 +103,7 @@ func generateKey(seed []byte, index int) (ed25519.PublicKey, ed25519.PrivateKey,
 	return pubKey, priKey, nil
 }
 
-func Seed(mnemonic, password string)([]byte, error){
+func Seed(mnemonic, password string) ([]byte, error) {
 	seedBytes, err := bip39.NewSeedWithErrorChecking(mnemonic, password)
 	if err != nil {
 		return nil, err
@@ -112,7 +111,7 @@ func Seed(mnemonic, password string)([]byte, error){
 	return seedBytes, nil
 }
 
-// 根据 seed 生成新的私钥
+// NewKeyFromSeed 根据 seed 生成新的私钥
 func NewKeyFromSeed(seed []byte, index int) (*Key, error) {
 	walletPath := path(index)
 	if err := verifyPath(walletPath); err != nil {
@@ -150,12 +149,12 @@ func newKeyFromSeed(key *Key, i uint32) (*Key, error) {
 	tmp := append([]byte{0x0}, key.key...)
 	data := append(tmp, iBytes...)
 
-	hmac := hmac.New(sha512.New, key.chainCode)
-	_, err := hmac.Write(data)
+	_hmac := hmac.New(sha512.New, key.chainCode)
+	_, err := _hmac.Write(data)
 	if err != nil {
 		return nil, err
 	}
-	sum := hmac.Sum(nil)
+	sum := _hmac.Sum(nil)
 	newKey := &Key{
 		key:       sum[0:32],
 		chainCode: sum[32:64],
@@ -244,9 +243,9 @@ func (k *Key) Seed() [32]byte {
 
 func float64ToByte(float float64) []byte {
 	bits := math.Float64bits(float)
-	bytes := make([]byte, 8)
-	binary.LittleEndian.PutUint64(bytes, bits)
-	return bytes
+	_bytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(_bytes, bits)
+	return _bytes
 }
 
 func PriKeyToStr(k ed25519.PrivateKey) string {
